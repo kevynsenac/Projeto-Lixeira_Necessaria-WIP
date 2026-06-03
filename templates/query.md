@@ -1,0 +1,2 @@
+CREATE DATABASE lixeira
+    DEFAULT CHARACTER SET = 'utf8mb4';
