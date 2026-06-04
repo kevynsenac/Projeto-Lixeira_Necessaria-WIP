@@ -2,16 +2,13 @@ let usuarioAtual = null;
 let meusPedidos = [];
 let pedidoEditandoId = null;
 
-// Carregar perfil
+// ==================== CARREGAR DADOS ====================
 async function carregarPerfil() {
     try {
-        const response = await fetch("/api/perfil");
-        const data = await response.json();
+        const res = await fetch("/api/perfil");
+        const data = await res.json();
 
-        if (data.status === "erro") {
-            window.location.href = "/login.html";
-            return;
-        }
+        if (data.status === "erro") return window.location.href = "/login.html";
 
         usuarioAtual = data.usuario;
         meusPedidos = data.pedidos;
@@ -43,7 +40,7 @@ function renderizarMeusPedidos() {
                 <div style="flex:1;">
                     <strong>${pedido.localizacao}</strong>
                     <p style="margin:10px 0; color:#d1fae5;">${pedido.descricao}</p>
-                    <small>${new Date(pedido.criado_em).toLocaleDateString('pt-BR')}</small>
+                    <small style="color:#86efac;">${new Date(pedido.criado_em).toLocaleDateString('pt-BR')}</small>
                 </div>
                 <div>
                     <button class="btn-editar" data-id="${pedido.id}">Editar</button>
@@ -64,7 +61,7 @@ function renderizarMeusPedidos() {
     });
 }
 
-// Editar Pedido
+// ==================== EDITAR PEDIDO ====================
 function editarPedido(id) {
     const pedido = meusPedidos.find(p => p.id == id);
     if (!pedido) return;
@@ -72,44 +69,42 @@ function editarPedido(id) {
     pedidoEditandoId = id;
     document.getElementById("editLocalizacao").value = pedido.localizacao;
     document.getElementById("editDescricao").value = pedido.descricao;
-    
+    document.getElementById("editImagem").value = pedido.imagem || "";
+
     document.getElementById("modalEditar").style.display = "flex";
 }
 
-// Confirmar Edição
 document.getElementById("confirmarEditar").addEventListener("click", async () => {
     const localizacao = document.getElementById("editLocalizacao").value.trim();
     const descricao = document.getElementById("editDescricao").value.trim();
+    const imagem = document.getElementById("editImagem").value.trim();
 
-    if (!localizacao || !descricao) return alert("Preencha todos os campos");
+    if (!localizacao || !descricao) return alert("Localização e descrição são obrigatórios");
 
     try {
         const res = await fetch(`/api/pedidos/${pedidoEditandoId}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ localizacao, descricao })
+            body: JSON.stringify({ localizacao, descricao, imagem })
         });
 
-        const result = await res.json();
-
-        if (result.status === "sucesso") {
+        if ((await res.json()).status === "sucesso") {
             mostrarToast("Pedido atualizado com sucesso!");
             fecharModal("modalEditar");
-            carregarPerfil(); // Recarrega a lista
+            carregarPerfil();
         }
     } catch (e) {
         alert("Erro ao atualizar pedido");
     }
 });
 
+// ==================== EXCLUIR PEDIDO ====================
 async function excluirPedido(id) {
     if (!confirm("Deseja realmente excluir este pedido?")) return;
 
     try {
         const res = await fetch(`/api/pedidos/${id}`, { method: "DELETE" });
-        const result = await res.json();
-
-        if (result.status === "sucesso") {
+        if ((await res.json()).status === "sucesso") {
             meusPedidos = meusPedidos.filter(p => p.id != id);
             document.getElementById("countPedidos").textContent = meusPedidos.length;
             renderizarMeusPedidos();
@@ -120,21 +115,23 @@ async function excluirPedido(id) {
     }
 }
 
-// Funções de Modal
+// ==================== MODAIS ====================
 function fecharModal(id) {
     document.getElementById(id).style.display = "none";
 }
 
-// Alterar Email e Senha (mantidos)
-document.getElementById("btnAlterarEmail").addEventListener("click", () => {
-    document.getElementById("modalEmail").style.display = "flex";
-});
+// Alterar Email / Senha
+document.getElementById("btnAlterarEmail").addEventListener("click", () => document.getElementById("modalEmail").style.display = "flex");
+document.getElementById("btnAlterarSenha").addEventListener("click", () => document.getElementById("modalSenha").style.display = "flex");
 
-document.getElementById("btnAlterarSenha").addEventListener("click", () => {
-    document.getElementById("modalSenha").style.display = "flex";
-});
-
-// ... (mantenha as funções de alterar email e senha que já tinha)
+// Toast
+function mostrarToast(mensagem) {
+    const toast = document.createElement("div");
+    toast.style.cssText = `position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#4ade80;color:#052e16;padding:16px 28px;border-radius:9999px;box-shadow:0 10px 25px rgba(0,0,0,0.3);z-index:2000;font-weight:600;`;
+    toast.textContent = mensagem;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+}
 
 // Inicialização
 carregarPerfil();

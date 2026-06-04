@@ -1,104 +1,97 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lixeira Necessária!</title>
-    <link rel="stylesheet" href="css/home.css" />
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-      rel="stylesheet"
-    />
-  </head>
-  <body>
+    <link rel="stylesheet" href="css/home.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
     <header class="header">
-      <div class="header-content">
-        <div class="logo">
-          <i class="fas fa-leaf"></i>
-          <h1>Lixeira Necessária!</h1>
-        </div>
-
-        <div class="nav">
-          <button id="btnCriar" class="btn-criar">
-            <i class="fas fa-plus"></i> Novo Pedido
-          </button>
-
-          <div class="user-info" id="userInfo">
-            <div class="user-profile" id="btnPerfil">
-              <div class="user-avatar">
-                <i class="fas fa-user-circle"></i>
-              </div>
-              <span class="username" id="usernameDisplay">Carregando...</span>
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-leaf"></i>
+                <h1>Lixeira Necessária!</h1>
             </div>
-            <button id="btnLogout" class="btn-logout" title="Sair">
-              <i class="fas fa-sign-out-alt"></i>
-            </button>
-          </div>
+            
+            <div class="nav">
+                <button id="btnCriar" class="btn-criar">
+                    <i class="fas fa-plus"></i> Novo Pedido
+                </button>
+                
+                <div class="user-info" id="userInfo">
+                    <div class="user-profile" id="btnPerfil">
+                        <div class="user-avatar">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <span class="username" id="usernameDisplay">Carregando...</span>
+                    </div>
+                    <button id="btnLogout" class="btn-logout" title="Sair">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
         </div>
-      </div>
     </header>
 
     <main class="container">
-      <div class="mural-header">
-        <h2>Mural de Pedidos</h2>
-        <p class="subtitle">Bairro: Vila Madalena • São Paulo, SP</p>
-      </div>
+        <div class="mural-header">
+            <h2>Mural de Pedidos</h2>
+            <p class="subtitle">Bairro: Vila Madalena • São Paulo, SP</p>
+        </div>
 
-      <div id="mural" class="mural"></div>
+        <div id="mural" class="mural"></div>
     </main>
 
     <!-- Modal Novo Pedido -->
     <div id="modalCriar" class="modal">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h3>Novo Pedido de Limpeza</h3>
-          <span class="close-modal">×</span>
-        </div>
-
-        <form id="formPedido">
-          <div class="form-group">
-            <label>Endereço ou Localização</label>
-            <input
-              type="text"
-              id="localizacao"
-              placeholder="Ex: Rua das Flores, 245 - próximo ao parque"
-              required
-            />
-          </div>
-
-          <div class="form-group">
-            <label>Descreva o problema</label>
-            <textarea
-              id="descricao"
-              rows="4"
-              placeholder="Descreva o que está acontecendo..."
-              required
-            ></textarea>
-          </div>
-
-          <div class="form-group">
-            <label>Fotos (máximo 3)</label>
-            <div class="upload-area" id="uploadArea">
-              <i class="fas fa-camera"></i>
-              <p>Clique para adicionar fotos</p>
-              <input type="file" id="fotoInput" accept="image/*" multiple />
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Novo Pedido de Limpeza</h3>
+                <span class="close-modal">×</span>
             </div>
-            <div id="previewFotos" class="preview-fotos"></div>
-          </div>
+            
+            <form id="formPedido">
+                <div class="form-group">
+                    <label>Endereço ou Localização</label>
+                    <input type="text" id="localizacao" placeholder="Ex: Rua das Flores, 245 - próximo ao parque" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Descreva o problema</label>
+                    <textarea id="descricao" rows="4" placeholder="Descreva o que está acontecendo..." required></textarea>
+                </div>
 
-          <div class="modal-actions">
-            <button type="button" class="btn-cancelar">Cancelar</button>
-            <button type="submit" class="btn-enviar">Enviar Pedido</button>
-          </div>
-        </form>
-      </div>
+                <!-- Novo campo: Link da Imagem -->
+                <div class="form-group">
+                    <label>Link da Imagem (URL) <small style="color:#86efac;">(opcional)</small></label>
+                    <input type="url" id="imagemUrl" placeholder="https://exemplo.com/imagem.jpg">
+                </div>
+                
+                <div class="form-group">
+                    <label>Ou anexe uma foto do dispositivo <small style="color:#86efac;">(opcional)</small></label>
+                    <div class="upload-area" id="uploadArea">
+                        <i class="fas fa-camera"></i>
+                        <p>Clique para adicionar fotos</p>
+                        <input type="file" id="fotoInput" accept="image/*" multiple>
+                    </div>
+                    <div id="previewFotos" class="preview-fotos"></div>
+                </div>
+                
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancelar">Cancelar</button>
+                    <button type="submit" class="btn-enviar">Enviar Pedido</button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <div id="toast" class="toast">
-      <i class="fas fa-check-circle"></i>
-      <span id="toastMessage"></span>
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage"></span>
     </div>
 
     <script src="js/home.js"></script>
-  </body>
+</body>
 </html>
