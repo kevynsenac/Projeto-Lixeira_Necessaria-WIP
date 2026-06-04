@@ -1,128 +1,71 @@
-let pedidos = [
-  {
-    id: 1,
-    local: "Rua Inajá, 187",
-    descricao:
-      "Grande acúmulo de lixo orgânico há mais de uma semana. Está começando a atrair animais.",
-    upvotes: 52,
-    imagem:
-      "https://s2.glbimg.com/KJMQETYnFI3sAo4oVeKosIHI1Qk=/620x465/s.glbimg.com/jo/g1/f/original/2013/12/05/vaquinha_tratada.jpg",
-    data: "há 3 horas",
-  },
-  {
-    id: 2,
-    local: "Praça do Sol, próximo ao coreto",
-    descricao:
-      "Lixeira pública completamente transbordando. O mau cheiro está insuportável.",
-    upvotes: 41,
-    imagem:
-      "https://ogimg.infoglobo.com.br/in/8709332-78f-b79/FT1086A/lixeiras-lotadas.jpg",
-    data: "há 6 horas",
-  },
-  {
-    id: 3,
-    local: "Rua Fradique Coutinho, 980",
-    descricao:
-      "Móveis velhos e colchão largados na calçada desde o fim de semana passado.",
-    upvotes: 27,
-    imagem:
-      "https://conteudo.imguol.com.br/c/entretenimento/b7/2015/08/07/moveis-e-objetos-achados-no-lixo-1438968420138_615x300.jpg",
-    data: "há 1 dia",
-  },
-  {
-    id: 4,
-    local: "Av. Pompeia, 450",
-    descricao:
-      "Resíduos de obra espalhados na rua. Isso é um perigo para as crianças que passam por aqui.",
-    upvotes: 35,
-    imagem:
-      "https://www.estadao.com.br/resizer/v2/HMZPLHZNLVJHZK3A6ATZUBCFBI.jpg?quality=80&auth=64f3bb2608c7a8976209175d3fc9401b1ade75852075f0cbde0099b11c8776c6&width=1200",
-    data: "há 2 dias",
-  },
-  {
-    id: 5,
-    local: "Rua dos Pinheiros, 312",
-    descricao:
-      "Sacos de lixo rasgados por cães. Resíduos espalhados por toda a calçada.",
-    upvotes: 19,
-    imagem:
-      "https://media.istockphoto.com/id/1356990699/pt/foto/torn-rubbish-bags.jpg?s=612x612&w=0&k=20&c=DNLfaMqEFk73PJigTNLxQ6-4VMZsQevDOmaTLbd7Jec=",
-    data: "há 4 horas",
-  },
-  {
-    id: 6,
-    local: "Praça da Vila, em frente ao bar",
-    descricao:
-      "Muito entulho acumulado. Parece que alguém jogou material de reforma e abandonou.",
-    upvotes: 44,
-    imagem:
-      "https://i0.statig.com.br/bancodeimagens/ce/bo/28/cebo28pl90fu09k9wavxztmm9.jpg",
-    data: "há 11 horas",
-  },
-  {
-    id: 7,
-    local: "Rua Girassol, 142",
-    descricao:
-      "Lixo domiciliar acumulado há dias. Os moradores estão reclamando do mau cheiro.",
-    upvotes: 23,
-    imagem:
-      "https://s1.static.brasilescola.uol.com.br/be/conteudo/images/lixo-domiciliar-54ad599dcba9f.jpg",
-    data: "há 1 dia",
-  },
-  {
-    id: 8,
-    local: "Rua dos Três Irmãos, 89",
-    descricao:
-      "Caixas de papelão molhadas e sacos abertos na esquina. Precisa de atenção urgente.",
-    upvotes: 31,
-    imagem:
-      "https://www.montanhascapixabas.com.br/wp-content/uploads/2019/05/Centenas_de_caixas_de_papelao_vazias_amanhecem_na_rua_em_Marechal_Floriano.jpeg",
-    data: "há 7 horas",
-  },
-  {
-    id: 9,
-    local: "Av. Heitor Peixoto, 765",
-    descricao:
-      "Lixeira comunitária destruída e lixo espalhado ao redor. Já notifiquei antes.",
-    upvotes: 18,
-    imagem:
-      "https://lucasdorioverde.mt.gov.br/arquivos/noticias/9018/p/pref_lrv.jpeg",
-    data: "há 2 dias",
-  },
-  {
-    id: 10,
-    local: "Rua Harmonia, 556",
-    descricao:
-      "Restos de comida e embalagens jogadas na rua após o festival de ontem.",
-    upvotes: 29,
-    imagem:
-      "https://ogimg.infoglobo.com.br/in/7546874-2dc-c84/FT1086A/2013021004346.jpg",
-    data: "há 5 horas",
-  },
-];
+let pedidos = [];
+let usuarioLogado = null;
+
+async function carregarUsuario() {
+  try {
+    const response = await fetch("/api/auth");
+    const data = await response.json();
+
+    if (data.logado) {
+      usuarioLogado = data.usuario;
+      document.getElementById("usernameDisplay").textContent =
+        usuarioLogado.nome;
+    } else {
+      window.location.href = "/login.html";
+    }
+  } catch (error) {
+    console.error(error);
+    window.location.href = "/login.html";
+  }
+}
+
+async function carregarPedidos() {
+  try {
+    const response = await fetch("/api/pedidos");
+    const data = await response.json();
+
+    pedidos = data.map((pedido) => ({
+      ...pedido,
+      imagem: pedido.imagem
+        ? pedido.imagem.replace(/\[.*?\]\((.*?)\)/, "$1")
+        : "",
+    }));
+
+    renderizarMural();
+  } catch (error) {
+    console.error("Erro ao carregar pedidos:", error);
+  }
+}
 
 function criarCard(pedido) {
   const card = document.createElement("div");
   card.className = "card";
+
+  const imagemHTML = pedido.imagem
+    ? `<img src="${pedido.imagem}" alt="Problema">`
+    : `<div class="no-image">📸 Foto pendente</div>`;
+
   card.innerHTML = `
         <div class="card-image">
-            ${pedido.imagem ? `<img src="${pedido.imagem}" alt="Problema">` : `<div style="height:100%; display:flex; align-items:center; justify-content:center; background:#1f6b44; color:#86efac; font-size:0.9rem; text-align:center; padding:20px;">Foto pendente<br><small>Clique em editar se quiser adicionar</small></div>`}
+            ${imagemHTML}
         </div>
         <div class="card-content">
             <div class="local">
                 <i class="fas fa-map-marker-alt"></i>
-                <strong>${pedido.local}</strong>
+                <strong>${pedido.localizacao}</strong>
             </div>
             <p class="descricao">${pedido.descricao}</p>
-            <small style="color: #86efac;">${pedido.data}</small>
+            <small style="color: #86efac;">
+                Por ${pedido.autor} • ${new Date(pedido.criado_em).toLocaleDateString("pt-BR")}
+            </small>
         </div>
         <div class="card-footer">
             <button class="upvote" data-id="${pedido.id}">
                 <i class="fas fa-arrow-up"></i>
                 <span class="upvote-count">${pedido.upvotes}</span>
             </button>
-            <span style="color: #86efac; font-size: 0.95rem;">
-                <i class="fas fa-comment-dots"></i> ${Math.floor(Math.random() * 12) + 3}
+            <span style="color: #86efac;">
+                <i class="fas fa-comment-dots"></i> 4
             </span>
         </div>
     `;
@@ -132,28 +75,25 @@ function criarCard(pedido) {
 function renderizarMural() {
   const mural = document.getElementById("mural");
   mural.innerHTML = "";
-  pedidos.forEach((pedido) => {
-    mural.appendChild(criarCard(pedido));
-  });
-
-  document.querySelectorAll(".upvote").forEach((btn) => {
-    btn.addEventListener("click", function () {
-      const id = parseInt(this.dataset.id);
-      const pedido = pedidos.find((p) => p.id === id);
-      if (!pedido) return;
-
-      if (this.classList.contains("upvoted")) {
-        pedido.upvotes--;
-        this.classList.remove("upvoted");
-      } else {
-        pedido.upvotes++;
-        this.classList.add("upvoted");
-      }
-      this.querySelector(".upvote-count").textContent = pedido.upvotes;
-    });
-  });
+  pedidos.forEach((p) => mural.appendChild(criarCard(p)));
 }
 
+// ==================== EVENTOS DO HEADER ====================
+
+// Clique na área do perfil → redireciona para perfil.html
+document.getElementById("btnPerfil").addEventListener("click", () => {
+  window.location.href = "/perfil.html";
+});
+
+// Logout
+document.getElementById("btnLogout").addEventListener("click", async () => {
+  if (confirm("Deseja realmente sair?")) {
+    await fetch("/api/logout");
+    window.location.href = "/login.html";
+  }
+});
+
+// ==================== MODAL ====================
 const modal = document.getElementById("modalCriar");
 const btnCriar = document.getElementById("btnCriar");
 const closeModal = document.querySelector(".close-modal");
@@ -163,9 +103,11 @@ btnCriar.addEventListener("click", () => (modal.style.display = "flex"));
 closeModal.addEventListener("click", () => (modal.style.display = "none"));
 btnCancelar.addEventListener("click", () => (modal.style.display = "none"));
 
-document.getElementById("uploadArea").addEventListener("click", () => {
-  document.getElementById("fotoInput").click();
-});
+document
+  .getElementById("uploadArea")
+  .addEventListener("click", () =>
+    document.getElementById("fotoInput").click(),
+  );
 
 document.getElementById("fotoInput").addEventListener("change", function (e) {
   const preview = document.getElementById("previewFotos");
@@ -179,31 +121,37 @@ document.getElementById("fotoInput").addEventListener("change", function (e) {
     });
 });
 
-document.getElementById("formPedido").addEventListener("submit", function (e) {
-  e.preventDefault();
-  const local = document.getElementById("localizacao").value.trim();
-  const descricao = document.getElementById("descricao").value.trim();
+document
+  .getElementById("formPedido")
+  .addEventListener("submit", async function (e) {
+    e.preventDefault();
 
-  if (!local || !descricao) return;
+    const localizacao = document.getElementById("localizacao").value.trim();
+    const descricao = document.getElementById("descricao").value.trim();
 
-  const novoPedido = {
-    id: Date.now(),
-    local: local,
-    descricao: descricao,
-    upvotes: 1,
-    imagem: "",
-    data: "agora mesmo",
-  };
+    if (!localizacao || !descricao) return;
 
-  pedidos.unshift(novoPedido);
-  renderizarMural();
+    try {
+      const response = await fetch("/api/pedidos", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ localizacao, descricao }),
+      });
 
-  modal.style.display = "none";
-  mostrarToast("Pedido enviado com sucesso! Ele aparecerá no mural em breve.");
+      const result = await response.json();
 
-  this.reset();
-  document.getElementById("previewFotos").innerHTML = "";
-});
+      if (result.status === "sucesso") {
+        mostrarToast("Pedido enviado com sucesso!");
+        modal.style.display = "none";
+        this.reset();
+        document.getElementById("previewFotos").innerHTML = "";
+        carregarPedidos();
+      }
+    } catch (error) {
+      console.error(error);
+      mostrarToast("Erro ao enviar pedido");
+    }
+  });
 
 function mostrarToast(mensagem) {
   const toast = document.getElementById("toast");
@@ -212,4 +160,6 @@ function mostrarToast(mensagem) {
   setTimeout(() => (toast.style.display = "none"), 4200);
 }
 
-renderizarMural();
+// Inicialização
+carregarUsuario();
+carregarPedidos();

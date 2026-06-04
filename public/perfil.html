@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Meu Perfil - Lixeira Necessária</title>
+    <link rel="stylesheet" href="css/perfil.css" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header class="header">
+      <div class="header-content">
+        <div class="logo">
+          <i class="fas fa-leaf"></i>
+          <h1>Lixeira Necessária!</h1>
+        </div>
+        <a href="/" class="btn-voltar">← Voltar ao Mural</a>
+      </div>
+    </header>
+
+    <main class="container">
+      <div class="perfil-card">
+        <div class="profile-header">
+          <div class="profile-picture">
+            <i class="fas fa-user-circle"></i>
+          </div>
+          <h1 id="nomeDisplay">Nome do Usuário</h1>
+          <p id="emailDisplay" class="email-text">email@exemplo.com</p>
+        </div>
+
+        <div class="section">
+          <h2>Alterar Dados</h2>
+          <button class="btn-alterar" id="btnAlterarEmail">
+            Alterar Email
+          </button>
+          <button class="btn-alterar" id="btnAlterarSenha">
+            Alterar Senha
+          </button>
+        </div>
+
+        <div class="section">
+          <h2>Meus Pedidos (<span id="countPedidos">0</span>)</h2>
+          <div id="listaPedidos"></div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Modal Alterar Email -->
+    <div id="modalEmail" class="modal">
+      <div class="modal-content">
+        <h3>Alterar Email</h3>
+        <input
+          type="password"
+          id="senhaAtualEmail"
+          placeholder="Senha atual"
+          required
+        />
+        <input type="email" id="novoEmail" placeholder="Novo email" required />
+        <div class="modal-actions">
+          <button class="btn-cancelar" onclick="fecharModal('modalEmail')">
+            Cancelar
+          </button>
+          <button id="confirmarEmail">Confirmar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Alterar Senha -->
+    <div id="modalSenha" class="modal">
+      <div class="modal-content">
+        <h3>Alterar Senha</h3>
+        <input
+          type="password"
+          id="senhaAtual"
+          placeholder="Senha atual"
+          required
+        />
+        <input
+          type="password"
+          id="novaSenha"
+          placeholder="Nova senha"
+          required
+        />
+        <div class="modal-actions">
+          <button class="btn-cancelar" onclick="fecharModal('modalSenha')">
+            Cancelar
+          </button>
+          <button id="confirmarSenha">Confirmar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Editar Pedido -->
+    <div id="modalEditar" class="modal">
+      <div class="modal-content">
+        <h3>Editar Pedido</h3>
+        <input type="text" id="editLocalizacao" placeholder="Localização" />
+        <textarea
+          id="editDescricao"
+          rows="4"
+          placeholder="Descrição do problema"
+        ></textarea>
+        <div class="modal-actions">
+          <button class="btn-cancelar" onclick="fecharModal('modalEditar')">
+            Cancelar
+          </button>
+          <button id="confirmarEditar">Salvar Alterações</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/perfil.js"></script>
+  </body>
+</html>
