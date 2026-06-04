@@ -51,7 +51,6 @@ function renderizarMeusPedidos() {
         container.appendChild(card);
     });
 
-    // Eventos
     document.querySelectorAll(".btn-editar").forEach(btn => {
         btn.addEventListener("click", () => editarPedido(btn.dataset.id));
     });
@@ -61,7 +60,7 @@ function renderizarMeusPedidos() {
     });
 }
 
-// ==================== EDITAR PEDIDO ====================
+// ==================== EDITAR / EXCLUIR PEDIDO ====================
 function editarPedido(id) {
     const pedido = meusPedidos.find(p => p.id == id);
     if (!pedido) return;
@@ -98,7 +97,6 @@ document.getElementById("confirmarEditar").addEventListener("click", async () =>
     }
 });
 
-// ==================== EXCLUIR PEDIDO ====================
 async function excluirPedido(id) {
     if (!confirm("Deseja realmente excluir este pedido?")) return;
 
@@ -115,16 +113,74 @@ async function excluirPedido(id) {
     }
 }
 
-// ==================== MODAIS ====================
+// ==================== MODAIS DE ALTERAÇÃO ====================
+
+// Abrir modais
+document.getElementById("btnAlterarEmail").addEventListener("click", () => {
+    document.getElementById("modalEmail").style.display = "flex";
+});
+
+document.getElementById("btnAlterarSenha").addEventListener("click", () => {
+    document.getElementById("modalSenha").style.display = "flex";
+});
+
+// Fechar modais
 function fecharModal(id) {
     document.getElementById(id).style.display = "none";
 }
 
-// Alterar Email / Senha
-document.getElementById("btnAlterarEmail").addEventListener("click", () => document.getElementById("modalEmail").style.display = "flex");
-document.getElementById("btnAlterarSenha").addEventListener("click", () => document.getElementById("modalSenha").style.display = "flex");
+// Alterar Email
+document.getElementById("confirmarEmail").addEventListener("click", async () => {
+    const senhaAtual = document.getElementById("senhaAtualEmail").value.trim();
+    const novoEmail = document.getElementById("novoEmail").value.trim();
 
-// Toast
+    if (!senhaAtual || !novoEmail) return alert("Preencha todos os campos");
+
+    try {
+        const res = await fetch("/api/perfil/email", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email: novoEmail })
+        });
+
+        if ((await res.json()).status === "sucesso") {
+            document.getElementById("emailDisplay").textContent = novoEmail;
+            mostrarToast("Email alterado com sucesso!");
+            fecharModal("modalEmail");
+            document.getElementById("senhaAtualEmail").value = "";
+            document.getElementById("novoEmail").value = "";
+        }
+    } catch (e) {
+        alert("Erro ao alterar email");
+    }
+});
+
+// Alterar Senha
+document.getElementById("confirmarSenha").addEventListener("click", async () => {
+    const senhaAtual = document.getElementById("senhaAtual").value.trim();
+    const novaSenha = document.getElementById("novaSenha").value.trim();
+
+    if (!senhaAtual || !novaSenha) return alert("Preencha todos os campos");
+
+    try {
+        const res = await fetch("/api/perfil/senha", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ senha: novaSenha })
+        });
+
+        if ((await res.json()).status === "sucesso") {
+            mostrarToast("Senha alterada com sucesso!");
+            fecharModal("modalSenha");
+            document.getElementById("senhaAtual").value = "";
+            document.getElementById("novaSenha").value = "";
+        }
+    } catch (e) {
+        alert("Erro ao alterar senha");
+    }
+});
+
+// ==================== TOAST ====================
 function mostrarToast(mensagem) {
     const toast = document.createElement("div");
     toast.style.cssText = `position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#4ade80;color:#052e16;padding:16px 28px;border-radius:9999px;box-shadow:0 10px 25px rgba(0,0,0,0.3);z-index:2000;font-weight:600;`;
