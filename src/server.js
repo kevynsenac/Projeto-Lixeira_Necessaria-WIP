@@ -229,23 +229,26 @@ app.delete("/api/pedidos/:id", async (req, res) => {
 
 // Atualizar pedido (Editar)
 app.put("/api/pedidos/:id", async (req, res) => {
-    if (!req.session.usuario) return res.status(401).json({ status: "erro" });
+  if (!req.session.usuario) return res.status(401).json({ status: "erro" });
 
-    try {
-        const { localizacao, descricao } = req.body;
-        const pedidoId = req.params.id;
+  try {
+    const { localizacao, descricao } = req.body;
+    const pedidoId = req.params.id;
 
-        await db.execute(`
+    await db.execute(
+      `
             UPDATE pedidos 
             SET localizacao = ?, descricao = ? 
             WHERE id = ? AND usuario_id = ?
-        `, [localizacao, descricao, pedidoId, req.session.usuario.id]);
+        `,
+      [localizacao, descricao, pedidoId, req.session.usuario.id],
+    );
 
-        res.json({ status: "sucesso" });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ status: "erro" });
-    }
+    res.json({ status: "sucesso" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ status: "erro" });
+  }
 });
 
 // ====================== ROTAS DAS PÁGINAS ======================
