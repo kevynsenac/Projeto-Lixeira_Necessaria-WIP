@@ -1,8 +1,3 @@
-**✅ Aqui está o README remasterizado e bem escrito para o seu projeto:**
-
----
-
-```markdown
 # Lixeira Necessária! (WIP)
 
 Uma plataforma cidadã para conectar moradores e governo na luta por bairros mais limpos e organizados.
