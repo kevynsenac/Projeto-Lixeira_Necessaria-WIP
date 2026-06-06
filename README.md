@@ -88,4 +88,4 @@ Acesse no navegador: [http://localhost:8081](http://localhost:8081)
 
 ---
 
-**Desenvolvido com ❤️ para fins didáticos e impacto social.**
+**Desenvolvido com ❤️ para fins didáticos.**
