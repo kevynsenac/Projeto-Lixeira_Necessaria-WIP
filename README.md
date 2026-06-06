@@ -77,20 +77,6 @@ Acesse no navegador: [http://localhost:8081](http://localhost:8081)
 
 ---
 
-## Observações sobre o Desenvolvimento
-
-Este projeto foi desenvolvido com foco em aprendizado, organização de código e experiência do usuário.
-
-- A **IA (Grok)** foi utilizada para:
-  - Refatoração e melhoria de código
-  - Criação e ajuste de interfaces
-  - Organização de pastas e padronização
-  - Sugestões de design e UX
-
-O objetivo principal foi construir uma aplicação funcional, limpa e didática.
-
----
-
 ## Próximos Passos (Futuro)
 
 - Upload real de imagens (salvar arquivos no servidor)
